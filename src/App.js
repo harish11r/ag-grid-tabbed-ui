@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   AppBar,
@@ -34,17 +34,51 @@ const useStyles = makeStyles((theme) => ({
 export default function App() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [rowData, setRowData] = useState(accountsData);
+  const [rowData, setRowData] = useState([]);
+
+  useEffect(() => {
+    setRowData(getRowData(accountsData));
+  }, [])
+
+  const getRowData = (data) => {
+    const currentData = [];
+    data.forEach(d => {
+      const yearData = [];
+      d.date.split('/').forEach(item => {
+        yearData.push({ year: item, selected: false });
+      });
+      currentData.push({ ...d, yearData });
+    })
+    return currentData;
+  }
+
+  const rowCheckChanged = (id, year) => {
+    const currentData = [];
+    rowData.forEach(d => {
+      if (d.id === id) {
+        const yearData = d.yearData.map(item => {
+          if (item.year === year) {
+            item.selected = !item.selected;
+          }
+          return item;
+        })
+        currentData.push({ ...d, yearData });
+      } else {
+        currentData.push(d);
+      }
+    });
+    setRowData(currentData);
+  }
 
   const handleChange = (_event, newValue) => {
     setValue(newValue);
     if (newValue === 0) {
-      setRowData(accountsData.filter(d => d.year <= 2012))
+      setRowData(getRowData(accountsData.filter(d => d.year <= 2012)))
     } else if (newValue === 1) {
-      setRowData(accountsData.filter(d => d.year <= 2004))
+      setRowData(getRowData(accountsData.filter(d => d.year <= 2004)))
     }
     else {
-      setRowData(accountsData.filter(d => d.year <= 2008))
+      setRowData(getRowData(accountsData.filter(d => d.year <= 2008)))
     }
   };
 
@@ -76,13 +110,13 @@ export default function App() {
               </Tabs>
             </AppBar>
             <TabPanel value={value} index={0}>
-              {rowData && <TableView rowData={rowData} />}
+              {rowData && <TableView rowData={rowData} rowCheckChanged={rowCheckChanged} />}
             </TabPanel>
             <TabPanel value={value} index={1}>
-              {rowData && <TableView rowData={rowData} />}
+              {rowData && <TableView rowData={rowData} rowCheckChanged={rowCheckChanged} />}
             </TabPanel>
             <TabPanel value={value} index={2}>
-              {rowData && <TableView rowData={rowData} />}
+              {rowData && <TableView rowData={rowData} rowCheckChanged={rowCheckChanged} />}
             </TabPanel>
           </Grid>
         </Grid>

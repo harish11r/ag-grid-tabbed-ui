@@ -7,7 +7,7 @@ const ContentContainer = styled.div`
 `;
 
 const LinkText = styled.a`
-    color: gray;
+  color: gray;
 `;
 
 export { ContentContainer, LinkText };

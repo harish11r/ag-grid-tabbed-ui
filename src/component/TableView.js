@@ -23,7 +23,7 @@ function TableView(props) {
 
     useEffect(() => {
         // setRowData(props.rowData);
-        // console.log(props.rowData);
+        //console.log(props.rowData);
         if (gridApi) {
             gridApi.setRowData(props.rowData);
         }
@@ -194,7 +194,7 @@ function TableView(props) {
                         paginationPageSize={paginationPageSize}
                         rowData={rowData}
                         rowHeight={120}
-                        deltaRowDataMode={true}
+
                         frameworkComponents={{
                             yearCellRenderer,
                             addCellRenderer
